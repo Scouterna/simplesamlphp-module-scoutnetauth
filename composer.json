@@ -1,0 +1,8 @@
+{
+	"name": "scouterna/simplesamlphp-module-scoutnetauth",
+	"description": "A simplesamlphp module allowing an IdP to authenticate registered members of the Guides and Scouts of Sweden.",
+	"type": "simplesamlphp-module",
+	"require": {
+		"simplesamlphp/composer-module-installer": "~1.0"
+	}
+}
