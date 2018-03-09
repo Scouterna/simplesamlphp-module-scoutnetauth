@@ -2,6 +2,8 @@
 class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_UserPassBase {
 
     protected function login($username, $password) {
+			// Get configuration
+			$scoutnetAuthConfig = \SimpleSAML_Configuration::getConfig('module_oauth2.php');
 
 /*		// CMJ SPECIALARE FÖR FUNKTIONSKONTON
 		// SLÄPPER IGENOM OM USER=PASS
@@ -14,7 +16,8 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
 */
 
 		// AUTH MOT SCOUTNET
-		$authUrl = 'https://www.scoutnet.se/api/authenticate';
+			$scoutnetHostname = $scoutnetAuthConfig->getString('scoutnetHostname');
+		$authUrl = 'https://' . $scoutnetHostname . '/api/authenticate';
 		$postdata = http_build_query(
 		    array(
 		        'username' => $username,
@@ -41,7 +44,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
                 	$firstlast = strtolower(str_replace($search, $replace, $firstlast));
 
 			//GET ADDITIONAL ATTRIBUTES FROM USER PROFILE
-			$profileUrl = "https://www.scoutnet.se/api/get/profile";
+			$profileUrl = 'https://' . $scoutnetHostname . '/api/get/profile';
 		
 			$options = array(
 			  'http'=>array(
