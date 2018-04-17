@@ -2,17 +2,6 @@
 class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_UserPassBase {
 
     protected function login($username, $password) {
-			// Get configuration
-
-/*		// CMJ SPECIALARE FÖR FUNKTIONSKONTON
-		// SLÄPPER IGENOM OM USER=PASS
-		if ($username == 'medlemsregister' && $password == '123445') {
-                      $attributes = array(
-                         'firstlast' => array($username),
-                      );
-                      return $attributes;
-		} else {
-*/
 
 		// AUTH MOT SCOUTNET
 		$scoutnetHostname = getenv('SCOUTNET_HOSTNAME');
@@ -64,12 +53,12 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
 					}
 				}
 			}
-			if ($group_no == "1427") { $firstlast .= "@malarscouterna.se";} else
-                        if ($group_no == "1416") { $firstlast .= "@hasselbyscout.se";} else
-                        if ($group_no == "1441") { $firstlast .= "@spangascouterna.se";}
-			else
-			{  $firstlast .= "@".$group_no; }
-			// TODO: Make dynamic from SP metadata somehow..
+
+                        $bday = new DateTime($memberResultObj->dob);
+                        $today = new DateTime('00:00:00');
+                        $diff = $today->diff($bday);
+                        $age = $diff->y;
+                        if ($age < 15) $above_15 = 0; else $above_15 = 1;			
 
 	        	$attributes = array(
     	       	 	 'uid' => array($authResultObj->member->member_no),
@@ -81,8 +70,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
 			 'dob' => array($memberResultObj->dob),
                          'group_name' => array($group_name),
                          'group_no' => array($group_no),
-
-/*            	 	 'eduPersonAffiliation' => array('member', 'employee'), */
+			 'above_15' => array($above_15),
 			);
 			/* Return the attributes. */
         		return $attributes;
@@ -98,7 +86,5 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
 		}
     }
 }
-
-/* TODO: rejecta för de som inte är medlemmar i kåre */
 
 ?>
