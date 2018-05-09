@@ -46,10 +46,11 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
 			$memberResultObj = json_decode($memberResult);
 
 			foreach ($memberResultObj->memberships as $memberships) {
-				foreach ($memberships as $group) {
+				foreach ($memberships as $groupkey => $group) {
 					if ($group->is_primary) { 
 						$group_name = $group->group->name;
 						$group_no = $group->group->group_no;
+						$group_id = $groupkey;
 					}
 				}
 			}
@@ -70,6 +71,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
 			 'dob' => array($memberResultObj->dob),
                          'group_name' => array($group_name),
                          'group_no' => array($group_no),
+                         'group_id' => array($group_id),				
 			 'above_15' => array($above_15),
 			);
 			/* Return the attributes. */
