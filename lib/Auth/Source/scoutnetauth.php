@@ -55,6 +55,21 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
 				}
 			}
 
+                        //GET USER ROLES
+												$roleUrl = 'https://' . $scoutnetHostname . '/api/get/user_roles';
+
+                        $options = array(
+                          'http'=>array(
+                            'method'=>"POST",
+                            'header'=>"Authorization: Bearer ".$authResultObj->token."\r\n"
+                          )
+                        );
+
+                        $context = stream_context_create($options);
+                        $rolesResult = file_get_contents($roleUrl, false, $context);
+						$rolesResultObj = json_decode($rolesResult);
+
+						// Calculate age (above or under 15?)
                         $bday = new DateTime($memberResultObj->dob);
                         $today = new DateTime('00:00:00');
                         $diff = $today->diff($bday);
@@ -73,7 +88,12 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
                          'group_no' => array($group_no),
                          'group_id' => array($group_id),				
 			 'above_15' => array($above_15),
+			 'roles' => array($rolesResult),
 			);
+
+
+
+
 			/* Return the attributes. */
         		return $attributes;
         	} else if (isset($authResultObj->err)) {
