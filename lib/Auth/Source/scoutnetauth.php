@@ -87,9 +87,8 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
         // Calculate age (above or under 15?)
         $bday = new DateTime($memberResultObj->dob);
         $today = new DateTime('00:00:00');
-        $diff = $today->diff($bday);
-        $age = $diff->y;
-        if ($age < 15) $above_15 = 0; else $above_15 = 1;
+        $age = $today->diff($bday)->y;
+        $above_15 = (int) ($age < 15);
 
         $attributes = array(
             'uid' => array($authResultObj->member->member_no),
