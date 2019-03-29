@@ -42,10 +42,19 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
 
         /* Inloggningen lyckades */
 
+        $translation = [
+            ' ' => '.',
+            '/' => '-',
+            'é' => 'e',
+            'Å' => 'a',
+            'å' => 'a',
+            'Ä' => 'a',
+            'ä' => 'a',
+            'Ö' => 'o',
+            'ö' => 'o',
+        ];
         $firstlast = $authResultObj->member->first_name . '.' . $authResultObj->member->last_name;
-        $search = Array("Å", "Ä", "Ö", "å", "ä", "ö", " ", "/", "é");
-        $replace = Array("A", "A", "O", "a", "a", "o", ".", "-", "e");
-        $firstlast = strtolower(str_replace($search, $replace, $firstlast));
+        $firstlast = strtolower(strtr($firstlast, $translation));
 
         //GET ADDITIONAL ATTRIBUTES FROM USER PROFILE
         $profileUrl = 'https://' . $scoutnetHostname . '/api/get/profile';
