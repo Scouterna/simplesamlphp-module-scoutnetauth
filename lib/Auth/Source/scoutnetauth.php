@@ -61,8 +61,8 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
 
         $options = [
             'http' => [
-                'method' => "POST",
-                'header' => "Authorization: Bearer " . $authResultObj->token . "\r\n"
+                'method' => 'POST',
+                'header' => 'Authorization: Bearer ' . $authResultObj->token . "\r\n"
             ]
         ];
 
@@ -85,8 +85,8 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
 
         $options = [
             'http' => [
-                'method' => "POST",
-                'header' => "Authorization: Bearer " . $authResultObj->token . "\r\n"
+                'method' => 'POST',
+                'header' => 'Authorization: Bearer ' . $authResultObj->token . "\r\n"
             ]
         ];
 
