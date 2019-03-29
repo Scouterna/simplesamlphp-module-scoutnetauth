@@ -1,4 +1,5 @@
 <?php
+
 class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_UserPassBase
 {
     protected function login($username, $password)
@@ -14,19 +15,19 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
         );
         $opts = array('http' =>
             array(
-                'method'  => 'POST',
-                'header'  => 'Content-type: application/x-www-form-urlencoded',
+                'method' => 'POST',
+                'header' => 'Content-type: application/x-www-form-urlencoded',
                 'content' => $postdata
             )
         );
-        $context  = stream_context_create($opts);
+        $context = stream_context_create($opts);
         $authResult = file_get_contents($authUrl, false, $context);
         if ($authResult !== '') {
-            $authResultObj=json_decode($authResult);
+            $authResultObj = json_decode($authResult);
             if (isset($authResultObj->member->member_no)) {
                 /* Inloggningen lyckades */
 
-                $firstlast = $authResultObj->member->first_name .'.'.$authResultObj->member->last_name;
+                $firstlast = $authResultObj->member->first_name . '.' . $authResultObj->member->last_name;
                 $search = Array("Å", "Ä", "Ö", "å", "ä", "ö", " ", "/", "é");
                 $replace = Array("A", "A", "O", "a", "a", "o", ".", "-", "e");
                 $firstlast = strtolower(str_replace($search, $replace, $firstlast));
@@ -35,9 +36,9 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
                 $profileUrl = 'https://' . $scoutnetHostname . '/api/get/profile';
 
                 $options = array(
-                    'http'=>array(
-                        'method'=>"POST",
-                        'header'=>"Authorization: Bearer ".$authResultObj->token."\r\n"
+                    'http' => array(
+                        'method' => "POST",
+                        'header' => "Authorization: Bearer " . $authResultObj->token . "\r\n"
                     )
                 );
 
@@ -59,9 +60,9 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
                 $roleUrl = 'https://' . $scoutnetHostname . '/api/get/user_roles';
 
                 $options = array(
-                    'http'=>array(
-                        'method'=>"POST",
-                        'header'=>"Authorization: Bearer ".$authResultObj->token."\r\n"
+                    'http' => array(
+                        'method' => "POST",
+                        'header' => "Authorization: Bearer " . $authResultObj->token . "\r\n"
                     )
                 );
 
@@ -82,7 +83,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
                     'firstname' => array($authResultObj->member->first_name),
                     'lastname' => array($authResultObj->member->last_name),
                     'firstlast' => array($firstlast),
-                    'displayName' => array($authResultObj->member->first_name .' '.$authResultObj->member->last_name),
+                    'displayName' => array($authResultObj->member->first_name . ' ' . $authResultObj->member->last_name),
                     'dob' => array($memberResultObj->dob),
                     'group_name' => array($group_name),
                     'group_no' => array($group_no),
