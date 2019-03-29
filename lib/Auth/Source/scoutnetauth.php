@@ -53,8 +53,8 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
             'Ö' => 'o',
             'ö' => 'o',
         ];
-        $firstlast = $authResultObj->member->first_name . '.' . $authResultObj->member->last_name;
-        $firstlast = strtolower(strtr($firstlast, $translation));
+        $displayName = $authResultObj->member->first_name . ' ' . $authResultObj->member->last_name;
+        $firstlast = strtolower(strtr($displayName, $translation));
 
         //GET ADDITIONAL ATTRIBUTES FROM USER PROFILE
         $profileUrl = 'https://' . $scoutnetHostname . '/api/get/profile';
@@ -105,7 +105,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
             'firstname' => [$authResultObj->member->first_name],
             'lastname' => [$authResultObj->member->last_name],
             'firstlast' => [$firstlast],
-            'displayName' => [$authResultObj->member->first_name . ' ' . $authResultObj->member->last_name],
+            'displayName' => [$displayName],
             'dob' => [$memberResultObj->dob],
             'group_name' => [$group_name],
             'group_no' => [$group_no],
