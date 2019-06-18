@@ -79,8 +79,8 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
         foreach ($memberResultObj->memberships as $memberships) {
             foreach ($memberships as $groupkey => $group) {
                 if ($group->is_primary) {
-                    $group_name = $group->group->name;
-                    $group_no = $group->group->group_no;
+                    $group_name = $group->name;
+                    $group_no = $group->group_no;
                     $group_id = $groupkey;
                 }
             }
