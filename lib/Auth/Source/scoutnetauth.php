@@ -2,6 +2,13 @@
 
 class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_UserPassBase
 {
+    /**
+     * @param string $username
+     * @param string $password
+     * @return array|void
+     * @throws SimpleSAML_Error_Error
+     * @throws Exception from the DateTime-object \DateTime::__construct()
+     */
     protected function login($username, $password)
     {
 
