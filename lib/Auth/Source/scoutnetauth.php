@@ -103,7 +103,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
         $bday = new DateTime($memberResultObj->dob);
         $today = new DateTime('00:00:00');
         $age = $today->diff($bday)->y;
-        $above_15 = (int)($age < 15);
+        $above_15 = (int)($age > 15);
 
         $attributes = [
             'uid' => [$authResultObj->member->member_no],
