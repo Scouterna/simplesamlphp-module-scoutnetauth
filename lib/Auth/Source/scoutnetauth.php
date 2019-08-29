@@ -1,7 +1,7 @@
 <?php
+
 class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_UserPassBase
 {
-
     protected function login($username, $password)
     {
 
