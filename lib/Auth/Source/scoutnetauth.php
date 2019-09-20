@@ -29,10 +29,9 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
             if (isset($authResultObj->member->member_no)) {
                 /* Inloggningen lyckades */
 
-                $firstlast = $authResultObj->member->first_name . '.' . $authResultObj->member->last_name;
-                $search = array("Å", "Ä", "Ö", "å", "ä", "ö", " ", "/", "é");
-                $replace = array("A", "A", "O", "a", "a", "o", ".", "-", "e");
-                $firstlast = strtolower(str_replace($search, $replace, $firstlast));
+                $firstFormatted = $this->formatNameForEmail($authResultObj->member->first_name);
+                $lastFormatted = $this->formatNameForEmail($authResultObj->member->last_name);
+                $firstlast = $firstFormatted . '.' . $lastFormatted;
 
                 //GET ADDITIONAL ATTRIBUTES FROM USER PROFILE
                 $profileUrl = 'https://' . $scoutnetHostname . '/api/get/profile';
@@ -108,5 +107,21 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
             SimpleSAML_Logger::warning('ScoutnetAuth: Kunde inte koppla upp mot SCOUTNET. Vänligen försök senare.');
             throw new SimpleSAML_Error_Error('WRONGUSERPASS');
         }
+    }
+
+    /**
+     * Formats a name to be used in an email address.
+     * @param string $name
+     * @return string
+     */
+    private function formatNameForEmail($name)
+    {
+        $name = trim(strtolower($name)); // Convert to lower case and trim spaces.
+        $name = preg_replace('/([\s]+/', '.', $name); // Replace empty space with one dot each.
+        $name = preg_replace('/[.][\-]/', '-', $name); // Replace .- with -
+        $name = preg_replace('/[\-][.]/', '-', $name); // Replace -. with -
+        $name = sspmod_scoutnetmodule_helpers::removeDiacritics($name); // Replace special characters with normal ones.
+        $name = preg_replace('/[^0-9a-z.\-]/i', '', $name); // Remove remaining non-letter and non-number characters.
+        return $name;
     }
 }
