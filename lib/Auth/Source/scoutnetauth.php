@@ -116,12 +116,12 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
      */
     private function formatNameForEmail($name)
     {
-        $name = trim(strtolower($name)); // Convert to lower case and trim spaces.
+        $name = trim($name);
         $name = preg_replace('/\s+/', '.', $name); // Replace empty space with one dot each.
-        $name = preg_replace('/[.][\-]/', '-', $name); // Replace .- with -
-        $name = preg_replace('/[\-][.]/', '-', $name); // Replace -. with -
+        $name = strtr($name, ['.-' => '-', '-.' => '-']); // Replace -. and -. with -
         $name = $this->removeDiacritics($name); // Replace special characters with normal ones.
         $name = preg_replace('/[^0-9a-z.\-]/i', '', $name); // Remove remaining non-letter and non-number characters.
+        $name = strtolower($name);
         return $name;
     }
 
