@@ -5,11 +5,11 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
     /**
      * @param string $username
      * @param string $password
-     * @return array|void
+     * @return array
      * @throws SimpleSAML_Error_Error
      * @throws Exception from the DateTime-object \DateTime::__construct()
      */
-    protected function login($username, $password)
+    protected function login(string $username, string $password): array
     {
 
         // AUTH MOT SCOUTNET
@@ -36,8 +36,8 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
             if (isset($authResultObj->member->member_no)) {
                 /* Inloggningen lyckades */
 
-                $firstFormatted = $this->formatNameForEmail($authResultObj->member->first_name);
-                $lastFormatted = $this->formatNameForEmail($authResultObj->member->last_name);
+                $firstFormatted = self::formatNameForEmail($authResultObj->member->first_name);
+                $lastFormatted = self::formatNameForEmail($authResultObj->member->last_name);
                 $firstlast = $firstFormatted . '.' . $lastFormatted;
 
                 //GET ADDITIONAL ATTRIBUTES FROM USER PROFILE
@@ -104,9 +104,11 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
 
                 /* Return the attributes. */
                 return $attributes;
-            } else if (isset($authResultObj->err)) {
+            } elseif (isset($authResultObj->err)) {
                 /* inloggningen misslyckades */
                 SimpleSAML_Logger::warning('ScoutnetAuth: Felaktigt användarnamn eller lösenord för ' . var_export($username, TRUE) . '.');
+                throw new SimpleSAML_Error_Error('WRONGUSERPASS');
+            } else {
                 throw new SimpleSAML_Error_Error('WRONGUSERPASS');
             }
         } else {
@@ -121,12 +123,12 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
      * @param string $name
      * @return string
      */
-    private function formatNameForEmail($name)
+    private static function formatNameForEmail(string $name): string
     {
         $name = trim($name);
         $name = preg_replace('/\s+/', '.', $name); // Replace empty space with one dot each.
         $name = strtr($name, ['.-' => '-', '-.' => '-']); // Replace -. and -. with -
-        $name = $this->removeDiacritics($name); // Replace special characters with normal ones.
+        $name = self::removeDiacritics($name); // Replace special characters with normal ones.
         $name = preg_replace('/[^0-9a-z.\-]/i', '', $name); // Remove remaining non-letter and non-number characters.
         $name = strtolower($name);
         return $name;
@@ -139,7 +141,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
      * @param string $str
      * @return string
      */
-    private function removeDiacritics($str)
+    private static function removeDiacritics(string $str): string
     {
         $replacements = [
             'A' => '/[\x{0041}\x{24B6}\x{FF21}\x{00C0}\x{00C1}\x{00C2}\x{1EA6}\x{1EA4}\x{1EAA}\x{1EA8}\x{00C3}\x{0100}\x{0102}\x{1EB0}\x{1EAE}\x{1EB4}\x{1EB2}\x{0226}\x{01E0}\x{00C4}\x{01DE}\x{1EA2}\x{00C5}\x{01FA}\x{01CD}\x{0200}\x{0202}\x{1EA0}\x{1EAC}\x{1EB6}\x{1E00}\x{0104}\x{023A}\x{2C6F}]/u',
