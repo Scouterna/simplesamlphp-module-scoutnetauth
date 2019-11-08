@@ -40,7 +40,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
             throw new SimpleSAML_Error_Error('WRONGUSERPASS');
         }
 
-        $authResultObj = json_decode($authResult, true, 512, JSON_THROW_ON_ERROR);
+        $authResultObj = json_decode($authResult, false, 512, JSON_THROW_ON_ERROR);
         if (empty($authResultObj->member->member_no)) {
             /* inloggningen misslyckades */
             if (empty($authResultObj->err)) {
@@ -69,7 +69,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_Us
 
         $context = stream_context_create($options);
         $memberResult = file_get_contents($profileUrl, false, $context);
-        $memberResultObj = json_decode($memberResult, true, 512, JSON_THROW_ON_ERROR);
+        $memberResultObj = json_decode($memberResult, false, 512, JSON_THROW_ON_ERROR);
 
         $groupNames = [];
         $groupNos = [];
