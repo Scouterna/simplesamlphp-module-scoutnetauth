@@ -6,5 +6,8 @@
 	"require": {
 		"simplesamlphp/composer-module-installer": "~1.0",
 		"ext-json": "*"
-    }
+    },
+	"require-dev": {
+		"simplesamlphp/simplesamlphp": "^1.17"
+	}
 }
