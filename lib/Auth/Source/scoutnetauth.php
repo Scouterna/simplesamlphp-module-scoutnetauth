@@ -14,8 +14,14 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
      * @throws SimpleSAML_Error_Error
      * @throws Exception from the DateTime-object \DateTime::__construct()
      */
-    protected function login(string $username, string $password): array
+    protected function login($username, $password): array
     {
+        if (!is_string($username)) {
+            throw new \RuntimeException('Username must be a string');
+        }
+        if (!is_string($password)) {
+            throw new \RuntimeException('Password must be a string');
+        }
         // AUTH MOT SCOUTNET
         $scoutnetHostname = getenv('SCOUTNET_HOSTNAME');
         $authUrl = "https://{$scoutnetHostname}/api/authenticate";
