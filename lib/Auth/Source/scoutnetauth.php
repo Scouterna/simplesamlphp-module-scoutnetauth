@@ -1,9 +1,11 @@
 <?php
 
+use SimpleSAML\Module\core\Auth\UserPassBase;
+
 /**
  * Class sspmod_scoutnetmodule_Auth_Source_scoutnetauth
  */
-class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends sspmod_core_Auth_UserPassBase
+class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
 {
     /**
      * @param string $username
