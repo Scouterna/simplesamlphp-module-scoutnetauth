@@ -1,6 +1,6 @@
 # Simplesamlphp-autentisering mot Scoutnet
 
-Används av Scouterna för scoutid.se, skapat av @magnushasselquist.
+Används av Scouterna för scoutid.se, skapat av <a href="https://github.com/magnushasselquist">@magnushasselquist</a>.
 
 För att installera:
 
@@ -14,10 +14,8 @@ Installera en specifik version (git-tag):
 
 ## Konfiguration
 
-Kopiera konfigurationen från config-template till config-mappen för
-simplesamlphp. Justera scoutnet-hostnamn, alternativt sätt miljövariabeln
-`SCOUTNET_HOSTNAME` till hostname för den scoutnet-installation du vill
-autentisera mot. 
+Justera scoutnet-hostnamn genom att sätt miljövariabeln `SCOUTNET_HOSTNAME`
+till hostname för den scoutnet-installation du vill autentisera mot.
 
 Obs: Det här är mest intressant för utveckling av scoutid.se. Om du vill
 autentisera användare på din webbsida och använda Scoutnet som källa är det
