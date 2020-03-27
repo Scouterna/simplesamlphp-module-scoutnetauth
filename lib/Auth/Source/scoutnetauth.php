@@ -111,7 +111,11 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
 
         /* Return the attributes. */
         return [
-            'uid' => [$authResultObj->member->member_no],
+            /**
+             * $nameIdValue is required to be a string, for some reason, so uid needs to be a string
+             * @see \SimpleSAML\Module\saml\IdP\SAML2::generateNameIdValue
+             */
+            'uid' => [(string) $authResultObj->member->member_no],
             'email' => [$authResultObj->member->email],
             'firstname' => [$authResultObj->member->first_name],
             'lastname' => [$authResultObj->member->last_name],
