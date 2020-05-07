@@ -28,7 +28,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
         $postData = http_build_query(
             [
                 'username' => $username,
-                'password' => $password
+                'password' => $password,
             ]
         );
         $opts = [
@@ -36,9 +36,11 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
                 [
                     'method' => 'POST',
                     'user_agent' => 'scoutid',
-                    'header' => 'Content-type: application/x-www-form-urlencoded',
-                    'content' => $postData
-                ]
+                    'header' => [
+                        'Content-type: application/x-www-form-urlencoded',
+                    ],
+                    'content' => $postData,
+                ],
         ];
         $context = stream_context_create($opts);
         $authResult = file_get_contents($authUrl, false, $context);
@@ -71,14 +73,19 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
 
         $options = [
             'http' => [
-                'method' => 'POST',
                 'user_agent' => 'scoutid',
-                'header' => "Authorization: Bearer {$authResultObj->token}\r\n"
-            ]
+                'header' => [
+                    "Authorization: Bearer {$authResultObj->token}",
+                ],
+            ],
         ];
 
         $context = stream_context_create($options);
         $memberResult = file_get_contents($profileUrl, false, $context);
+        if(!$memberResult) {
+            SimpleSAML_Logger::warning('ScoutnetAuth: empty result for get/profile, ' . $http_response_header[0]);
+            throw new \RuntimeException('Scoutnet returned empty result for get/profile, ' . $http_response_header[0]);
+        }
         $memberResultObj = json_decode($memberResult, false, 512, JSON_THROW_ON_ERROR);
 
         $groupNames = [];
@@ -97,14 +104,19 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
 
         $options = [
             'http' => [
-                'method' => 'POST',
                 'user_agent' => 'scoutid',
-                'header' => "Authorization: Bearer {$authResultObj->token}\r\n"
-            ]
+                'header' => [
+                    "Authorization: Bearer {$authResultObj->token}",
+                ],
+            ],
         ];
 
         $context = stream_context_create($options);
         $rolesResult = file_get_contents($roleUrl, false, $context);
+        if(!$rolesResult) {
+            SimpleSAML_Logger::warning('ScoutnetAuth: empty result for get/profile, ' . $http_response_header[0]);
+            throw new \RuntimeException('Scoutnet returned empty result for get/user_roles, ' . $http_response_header[0]);
+        }
 
         // Calculate age (above or under 15?)
         $birthday = new DateTime($memberResultObj->dob);
