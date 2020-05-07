@@ -83,6 +83,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
         $context = stream_context_create($options);
         $memberResult = file_get_contents($profileUrl, false, $context);
         if(!$memberResult) {
+            SimpleSAML_Logger::warning('ScoutnetAuth: empty result for get/profile, ' . $http_response_header[0]);
             throw new \RuntimeException('Scoutnet returned empty result for get/profile, ' . $http_response_header[0]);
         }
         $memberResultObj = json_decode($memberResult, false, 512, JSON_THROW_ON_ERROR);
@@ -113,6 +114,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
         $context = stream_context_create($options);
         $rolesResult = file_get_contents($roleUrl, false, $context);
         if(!$rolesResult) {
+            SimpleSAML_Logger::warning('ScoutnetAuth: empty result for get/profile, ' . $http_response_header[0]);
             throw new \RuntimeException('Scoutnet returned empty result for get/user_roles, ' . $http_response_header[0]);
         }
 
