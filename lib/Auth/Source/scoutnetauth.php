@@ -82,6 +82,9 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
 
         $context = stream_context_create($options);
         $memberResult = file_get_contents($profileUrl, false, $context);
+        if(!$memberResult) {
+            throw new \RuntimeException('Scoutnet returned empty result for get/profile, ' . $http_response_header[0]);
+        }
         $memberResultObj = json_decode($memberResult, false, 512, JSON_THROW_ON_ERROR);
 
         $groupNames = [];
@@ -109,6 +112,9 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
 
         $context = stream_context_create($options);
         $rolesResult = file_get_contents($roleUrl, false, $context);
+        if(!$rolesResult) {
+            throw new \RuntimeException('Scoutnet returned empty result for get/user_roles, ' . $http_response_header[0]);
+        }
 
         // Calculate age (above or under 15?)
         $birthday = new DateTime($memberResultObj->dob);
