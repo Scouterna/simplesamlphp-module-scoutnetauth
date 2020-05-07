@@ -35,6 +35,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
             'http' =>
                 [
                     'method' => 'POST',
+                    'user_agent' => 'scoutid',
                     'header' => 'Content-type: application/x-www-form-urlencoded',
                     'content' => $postData
                 ]
@@ -71,6 +72,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
         $options = [
             'http' => [
                 'method' => 'POST',
+                'user_agent' => 'scoutid',
                 'header' => "Authorization: Bearer {$authResultObj->token}\r\n"
             ]
         ];
@@ -96,6 +98,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
         $options = [
             'http' => [
                 'method' => 'POST',
+                'user_agent' => 'scoutid',
                 'header' => "Authorization: Bearer {$authResultObj->token}\r\n"
             ]
         ];
