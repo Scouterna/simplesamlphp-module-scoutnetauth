@@ -152,7 +152,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
             }
         }
         sort($roleList);
-        $roleList = array_unique($roleList);
+        $roleList = array_values(array_unique($roleList));
 
         /* Return the attributes. */
         return [
