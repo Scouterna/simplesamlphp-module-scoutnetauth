@@ -138,6 +138,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
              * @see \SimpleSAML\Module\saml\IdP\SAML2::generateNameIdValue
              */
             'uid' => [(string) $authResultObj->member->member_no],
+            'sub' => ["{$authResultObj->member->member_no}@{$scoutnetHostname}"],
             'email' => [$authResultObj->member->email],
             'firstname' => [$authResultObj->member->first_name],
             'lastname' => [$authResultObj->member->last_name],
