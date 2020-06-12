@@ -131,6 +131,25 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
         $age = $today->diff($birthday)->y;
         $above_15 = (int) ($age >= 15);
 
+        $roleList = [];
+        /** @noinspection JsonEncodingApiUsageInspection */
+        $roles = json_decode($rolesResult, true);
+        if($roles) {
+            foreach($roles as $roleType => $rolesForType) {
+                foreach($rolesForType as $roleTypeId => $rolesForTypeId) {
+                    foreach($rolesForTypeId as $roleId => $roleName) {
+                        $roleList[] = "{$roleType}:{$roleTypeId}:{$roleName}";
+                        $roleList[] = "{$roleType}:*:{$roleName}";
+                        $roleList[] = "*:*:{$roleName}";
+                    }
+                    $roleList[] = "{$roleType}:{$roleTypeId}:*";
+                }
+                $roleList[] = "{$roleType}:*:*";
+            }
+        }
+        sort($roleList);
+        $roleList = array_unique($roleList);
+
         /* Return the attributes. */
         return [
             /**
@@ -150,6 +169,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
             'group_id' => $groupIds,
             'above_15' => [$above_15],
             'roles' => [$rolesResult],
+            'role' => $roleList,
         ];
     }
 
