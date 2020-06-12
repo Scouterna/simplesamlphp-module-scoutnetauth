@@ -142,9 +142,13 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
                         $roleList[] = "{$roleType}:*:{$roleName}";
                         $roleList[] = "*:*:{$roleName}";
                     }
-                    $roleList[] = "{$roleType}:{$roleTypeId}:*";
+                    if($rolesForTypeId) {
+                        $roleList[] = "{$roleType}:{$roleTypeId}:*";
+                    }
                 }
-                $roleList[] = "{$roleType}:*:*";
+                if($rolesForType) {
+                    $roleList[] = "{$roleType}:*:*";
+                }
             }
         }
         sort($roleList);
