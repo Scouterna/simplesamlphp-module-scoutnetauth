@@ -51,6 +51,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
             throw new SimpleSAML_Error_Error('WRONGUSERPASS');
         }
 
+        /** @var \PHPDoc\Scoutnet\Response\AuthenticateRoot|\PHPDoc\Scoutnet\Response\AuthenticateError $authResultObj */
         $authResultObj = json_decode($authResult, false, 512, JSON_THROW_ON_ERROR);
         if (empty($authResultObj->member->member_no)) {
             /* inloggningen misslyckades */
@@ -86,12 +87,17 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
             SimpleSAML_Logger::warning('ScoutnetAuth: empty result for get/profile, ' . $http_response_header[0]);
             throw new \RuntimeException('Scoutnet returned empty result for get/profile, ' . $http_response_header[0]);
         }
+        /** @var \PHPDoc\Scoutnet\Response\ProfileRoot $memberResultObj */
         $memberResultObj = json_decode($memberResult, false, 512, JSON_THROW_ON_ERROR);
 
         $groupNames = [];
         $groupNos = [];
         $groupIds = [];
         foreach ($memberResultObj->memberships as $memberships) {
+            /**
+             * @var string $groupKey
+             * @var \PHPDoc\Scoutnet\Response\ProfileMemebership $group
+             */
             foreach ($memberships as $groupKey => $group) {
                 $groupNames[] = $group->group->name;
                 $groupNos[] = $group->group->group_no;
@@ -112,6 +118,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
         ];
 
         $context = stream_context_create($options);
+        /** @var \PHPDoc\Scoutnet\Response\RolesRoot $rolesResult */
         $rolesResult = file_get_contents($roleUrl, false, $context);
         if(!$rolesResult) {
             SimpleSAML_Logger::warning('ScoutnetAuth: empty result for get/profile, ' . $http_response_header[0]);
@@ -124,6 +131,29 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
         $age = $today->diff($birthday)->y;
         $above_15 = (int) ($age >= 15);
 
+        $roleList = [];
+        /** @noinspection JsonEncodingApiUsageInspection */
+        $roles = json_decode($rolesResult, true);
+        if($roles) {
+            foreach($roles as $roleType => $rolesForType) {
+                foreach($rolesForType as $roleTypeId => $rolesForTypeId) {
+                    foreach($rolesForTypeId as $roleId => $roleName) {
+                        $roleList[] = "{$roleType}:{$roleTypeId}:{$roleName}";
+                        $roleList[] = "{$roleType}:*:{$roleName}";
+                        $roleList[] = "*:*:{$roleName}";
+                    }
+                    if($rolesForTypeId) {
+                        $roleList[] = "{$roleType}:{$roleTypeId}:*";
+                    }
+                }
+                if($rolesForType) {
+                    $roleList[] = "{$roleType}:*:*";
+                }
+            }
+        }
+        sort($roleList);
+        $roleList = array_values(array_unique($roleList));
+
         /* Return the attributes. */
         return [
             /**
@@ -131,6 +161,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
              * @see \SimpleSAML\Module\saml\IdP\SAML2::generateNameIdValue
              */
             'uid' => [(string) $authResultObj->member->member_no],
+            'sub' => ["{$authResultObj->member->member_no}@{$scoutnetHostname}"],
             'email' => [$authResultObj->member->email],
             'firstname' => [$authResultObj->member->first_name],
             'lastname' => [$authResultObj->member->last_name],
@@ -142,6 +173,7 @@ class sspmod_scoutnetmodule_Auth_Source_scoutnetauth extends UserPassBase
             'group_id' => $groupIds,
             'above_15' => [$above_15],
             'roles' => [$rolesResult],
+            'role' => $roleList,
         ];
     }
 
