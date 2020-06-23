@@ -13,8 +13,15 @@ class AuthLog extends \SimpleSAML\Auth\ProcessingFilter
     public function process(&$request)
     {
         $ip = $_SERVER['HTTP_X_REAL_IP'] ?: $_SERVER['HTTP_X_FORWARDED_FOR'] ?: $_SERVER['REMOTE_ADDR'];
+        if(!empty($request['Attributes']['sub'][0])) {
+            $subject = $request['Attributes']['sub'][0];
+        } elseif($request['Attributes']['uid'][0]) {
+            $subject = $request['Attributes']['uid'][0];
+        } else {
+            $subject = 'ghost';
+        }
         $params = [
-            'sub' => $request['Attributes']['sub'][0],
+            'sub' => $subject,
             'entity_id' => $request['SPMetadata']['entityid'],
             'auth_type' => 'SAML2',
             'ip' => $ip,
